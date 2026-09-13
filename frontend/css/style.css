@@ -1,0 +1,119 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #2e7d32;
+  color: white;
+}
+
+header h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+header button {
+  background: white;
+  color: #2e7d32;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#map {
+  width: 100%;
+  height: calc(100vh - 56px);
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.escondido {
+  display: none;
+}
+
+.modal-conteudo {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-conteudo label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.modal-conteudo input,
+.modal-conteudo textarea {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.dica {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+.modal-botoes {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.modal-botoes button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#form-ponto button[type="submit"] {
+  background: #2e7d32;
+  color: white;
+}
+
+#btn-cancelar {
+  background: #ccc;
+}
+
+#btn-excluir {
+  background: #c62828;
+  color: white;
+}
+
+.escondido {
+  display: none !important;
+}
