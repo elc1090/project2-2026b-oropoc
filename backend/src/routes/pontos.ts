@@ -1,11 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const pool = require('../db/db');
+import { Router, Request, Response } from 'express';
+import pool from '../db/db';
+import { PontoColeta, PontoColetaInput } from '../types/ponto';
+
+const router = Router();
 
 // GET /api/pontos -> lista todos os pontos de coleta
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(
+    const result = await pool.query<PontoColeta>(
       'SELECT * FROM pontos_coleta ORDER BY criado_em DESC'
     );
     res.json(result.rows);
@@ -16,10 +18,10 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/pontos/:id -> busca um ponto específico
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
+    const result = await pool.query<PontoColeta>(
       'SELECT * FROM pontos_coleta WHERE id = $1',
       [id]
     );
@@ -34,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST /api/pontos -> cria um novo ponto de coleta
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request<{}, {}, PontoColetaInput>, res: Response) => {
   try {
     const { nome, descricao, tipo_material, latitude, longitude, endereco } = req.body;
 
@@ -42,7 +44,7 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ erro: 'Campos obrigatórios: nome, latitude, longitude' });
     }
 
-    const result = await pool.query(
+    const result = await pool.query<PontoColeta>(
       `INSERT INTO pontos_coleta (nome, descricao, tipo_material, latitude, longitude, endereco)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
       [nome, descricao, tipo_material, latitude, longitude, endereco]
@@ -56,12 +58,12 @@ router.post('/', async (req, res) => {
 });
 
 // PUT /api/pontos/:id -> atualiza um ponto de coleta existente
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: Request<{ id: string }, {}, PontoColetaInput>, res: Response) => {
   try {
     const { id } = req.params;
     const { nome, descricao, tipo_material, latitude, longitude, endereco } = req.body;
 
-    const result = await pool.query(
+    const result = await pool.query<PontoColeta>(
       `UPDATE pontos_coleta
        SET nome = $1, descricao = $2, tipo_material = $3,
            latitude = $4, longitude = $5, endereco = $6,
@@ -82,10 +84,10 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/pontos/:id -> exclui um ponto de coleta
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request<{ id: string }>, res: Response) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
+    const result = await pool.query<PontoColeta>(
       'DELETE FROM pontos_coleta WHERE id = $1 RETURNING *',
       [id]
     );
@@ -101,4 +103,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

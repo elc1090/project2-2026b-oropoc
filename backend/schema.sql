@@ -13,6 +13,5 @@ CREATE TABLE IF NOT EXISTS pontos_coleta (
     atualizado_em TIMESTAMP DEFAULT NOW()
 );
 
--- Índice para acelerar buscas por proximidade (opcional, mas recomendado)
 CREATE INDEX IF NOT EXISTS idx_pontos_coleta_lat_lng
     ON pontos_coleta (latitude, longitude);
