@@ -1,6 +1,6 @@
 import { PontoColeta, PontoColetaInput } from './types';
 
-const API_URL = 'http://localhost:3000/api/pontos';
+const API_URL = `${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/api/pontos`;
 
 export async function buscarPontos(): Promise<PontoColeta[]> {
   const resp = await fetch(API_URL);
