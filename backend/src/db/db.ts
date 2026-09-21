@@ -3,20 +3,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const pool = new Pool(
-  process.env.DATABASE_URL
-    ? {
-        connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
-      }
-    : {
-        host: process.env.DB_HOST || 'localhost',
-        port: Number(process.env.DB_PORT) || 5432,
-        user: process.env.DB_USER || 'postgres',
-        password: process.env.DB_PASSWORD || 'postgres',
-        database: process.env.DB_NAME || 'mapa_coleta',
-      }
-);
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL não foi configurada. Informe a URI do Supabase no arquivo .env ou no Render.');
+}
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
 pool.on('connect', () => {
   console.log('Conectado ao banco de dados PostgreSQL');
