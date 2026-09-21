@@ -13,6 +13,21 @@
 
   <div id="map"></div>
 
+  <button id="btn-historico" class="controle-mapa" type="button" aria-expanded="false">
+    Histórico
+  </button>
+
+  <aside id="painel-historico" class="painel-historico" aria-hidden="true">
+    <div class="historico-cabecalho">
+      <div>
+        <h2>Pontos criados</h2>
+        <p id="historico-contagem">0 pontos</p>
+      </div>
+      <button id="btn-fechar-historico" class="btn-fechar" type="button" aria-label="Fechar histórico">&times;</button>
+    </div>
+    <div id="lista-historico" class="lista-historico"></div>
+  </aside>
+
   <div id="modal-form" class="modal escondido">
     <div class="modal-conteudo">
       <h2 id="form-titulo">Novo Ponto de Coleta</h2>

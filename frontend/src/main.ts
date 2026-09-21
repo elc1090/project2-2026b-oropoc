@@ -21,6 +21,11 @@ const formTitulo = document.getElementById('form-titulo') as HTMLHeadingElement;
 const btnNovoPonto = document.getElementById('btn-novo-ponto') as HTMLButtonElement;
 const btnCancelar = document.getElementById('btn-cancelar') as HTMLButtonElement;
 const btnExcluir = document.getElementById('btn-excluir') as HTMLButtonElement;
+const btnHistorico = document.getElementById('btn-historico') as HTMLButtonElement;
+const btnFecharHistorico = document.getElementById('btn-fechar-historico') as HTMLButtonElement;
+const painelHistorico = document.getElementById('painel-historico') as HTMLElement;
+const listaHistorico = document.getElementById('lista-historico') as HTMLDivElement;
+const historicoContagem = document.getElementById('historico-contagem') as HTMLParagraphElement;
 const latDisplay = document.getElementById('lat-display') as HTMLSpanElement;
 const lngDisplay = document.getElementById('lng-display') as HTMLSpanElement;
 
@@ -53,10 +58,50 @@ function adicionarMarcador(ponto: PontoColeta): void {
   marcadores[ponto.id] = marker;
 }
 
+function renderizarHistorico(): void {
+  const quantidade = pontosCache.length;
+  historicoContagem.textContent = `${quantidade} ${quantidade === 1 ? 'ponto' : 'pontos'}`;
+
+  if (quantidade === 0) {
+    listaHistorico.innerHTML = '<p class="historico-vazio">Nenhum ponto criado ainda.</p>';
+    return;
+  }
+
+  listaHistorico.replaceChildren(
+    ...pontosCache.map((ponto) => {
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'item-historico';
+      item.dataset.id = String(ponto.id);
+
+      const nome = document.createElement('strong');
+      nome.textContent = ponto.nome;
+      item.appendChild(nome);
+
+      const detalhes = document.createElement('span');
+      detalhes.textContent = ponto.tipo_material || ponto.endereco || 'Sem detalhes adicionais';
+      item.appendChild(detalhes);
+
+      const data = document.createElement('small');
+      data.textContent = `Criado em ${new Date(ponto.criado_em).toLocaleDateString('pt-BR')}`;
+      item.appendChild(data);
+
+      item.addEventListener('click', () => {
+        map.setView([ponto.latitude, ponto.longitude], 16);
+        marcadores[ponto.id]?.openPopup();
+        window.abrirEdicao(ponto.id);
+      });
+
+      return item;
+    })
+  );
+}
+
 async function carregarPontosNoMapa(): Promise<void> {
   limparMarcadores();
   pontosCache = await buscarPontos();
   pontosCache.forEach(adicionarMarcador);
+  renderizarHistorico();
 }
 
 // ---------- Modal / Formulário ----------
@@ -78,6 +123,20 @@ function fecharModal(): void {
 btnNovoPonto.addEventListener('click', () => {
   abrirModal('Novo Ponto de Coleta');
 });
+
+function fecharHistorico(): void {
+  painelHistorico.classList.remove('aberto');
+  painelHistorico.setAttribute('aria-hidden', 'true');
+  btnHistorico.setAttribute('aria-expanded', 'false');
+}
+
+btnHistorico.addEventListener('click', () => {
+  const aberto = painelHistorico.classList.toggle('aberto');
+  painelHistorico.setAttribute('aria-hidden', String(!aberto));
+  btnHistorico.setAttribute('aria-expanded', String(aberto));
+});
+
+btnFecharHistorico.addEventListener('click', fecharHistorico);
 
 btnCancelar.addEventListener('click', fecharModal);
 
