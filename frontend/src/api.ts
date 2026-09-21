@@ -1,6 +1,6 @@
 import { PontoColeta, PontoColetaInput } from './types';
 
-const apiBaseUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3000' : '');
+const apiBaseUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:3000' : 'https://project2-2026b-oropoc-5.onrender.com');
 
 if (!apiBaseUrl) {
   throw new Error('VITE_API_URL não foi configurada no frontend de produção.');
