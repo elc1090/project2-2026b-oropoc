@@ -37,11 +37,16 @@ header button {
   height: calc(100vh - 56px);
 }
 
-.controle-mapa {
+.controles-mapa {
   position: fixed;
   top: 72px;
   right: 16px;
   z-index: 500;
+  display: grid;
+  gap: 8px;
+}
+
+.controle-mapa {
   border: 1px solid #d7e2d8;
   border-radius: 6px;
   padding: 10px 14px;
@@ -50,6 +55,11 @@ header button {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   font-weight: bold;
+}
+
+.controle-mapa:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .painel-historico {

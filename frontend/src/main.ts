@@ -13,6 +13,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let marcadores: Record<number, L.Marker> = {};
 let pontosCache: PontoColeta[] = [];
+let localizacaoUsuario: L.LatLng | null = null;
+let marcadorLocalizacao: L.CircleMarker | null = null;
 
 // ---------- Elementos do DOM (tipados) ----------
 const modal = document.getElementById('modal-form') as HTMLDivElement;
@@ -21,6 +23,7 @@ const formTitulo = document.getElementById('form-titulo') as HTMLHeadingElement;
 const btnNovoPonto = document.getElementById('btn-novo-ponto') as HTMLButtonElement;
 const btnCancelar = document.getElementById('btn-cancelar') as HTMLButtonElement;
 const btnExcluir = document.getElementById('btn-excluir') as HTMLButtonElement;
+const btnLocalizacao = document.getElementById('btn-localizacao') as HTMLButtonElement;
 const btnHistorico = document.getElementById('btn-historico') as HTMLButtonElement;
 const btnFecharHistorico = document.getElementById('btn-fechar-historico') as HTMLButtonElement;
 const painelHistorico = document.getElementById('painel-historico') as HTMLElement;
@@ -42,6 +45,50 @@ const lngInput = document.getElementById('longitude') as HTMLInputElement;
 function limparMarcadores(): void {
   Object.values(marcadores).forEach((m) => map.removeLayer(m));
   marcadores = {};
+}
+
+function centralizarNaLocalizacaoUsuario(): void {
+  if (!localizacaoUsuario) return;
+  map.setView(localizacaoUsuario, 16);
+  marcadorLocalizacao?.openPopup();
+}
+
+function localizarUsuario(): void {
+  if (localizacaoUsuario) {
+    centralizarNaLocalizacaoUsuario();
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    alert('Seu navegador não oferece suporte à localização.');
+    return;
+  }
+
+  btnLocalizacao.disabled = true;
+  btnLocalizacao.textContent = 'Localizando...';
+
+  navigator.geolocation.getCurrentPosition(
+    (posicao) => {
+      localizacaoUsuario = L.latLng(posicao.coords.latitude, posicao.coords.longitude);
+      marcadorLocalizacao = L.circleMarker(localizacaoUsuario, {
+        radius: 8,
+        color: '#1565c0',
+        fillColor: '#42a5f5',
+        fillOpacity: 0.9,
+        weight: 3,
+      }).addTo(map);
+      marcadorLocalizacao.bindPopup('Você está aqui.');
+      centralizarNaLocalizacaoUsuario();
+      btnLocalizacao.disabled = false;
+      btnLocalizacao.textContent = 'Minha localização';
+    },
+    () => {
+      btnLocalizacao.disabled = false;
+      btnLocalizacao.textContent = 'Minha localização';
+      alert('Não foi possível obter sua localização. Verifique a permissão do navegador.');
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
 }
 
 function adicionarMarcador(ponto: PontoColeta): void {
@@ -123,6 +170,8 @@ function fecharModal(): void {
 btnNovoPonto.addEventListener('click', () => {
   abrirModal('Novo Ponto de Coleta');
 });
+
+btnLocalizacao.addEventListener('click', localizarUsuario);
 
 function fecharHistorico(): void {
   painelHistorico.classList.remove('aberto');
