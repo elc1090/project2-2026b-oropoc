@@ -7,8 +7,11 @@ if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL não foi configurada. Informe a URI do Supabase no arquivo .env ou no Render.');
 }
 
+const databaseUrl = new URL(process.env.DATABASE_URL);
+databaseUrl.searchParams.delete('sslmode');
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseUrl.toString(),
   ssl: { rejectUnauthorized: false },
 });
 
