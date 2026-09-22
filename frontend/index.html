@@ -30,6 +30,8 @@
       </div>
       <button id="btn-fechar-historico" class="btn-fechar" type="button" aria-label="Fechar histórico">&times;</button>
     </div>
+    <label class="rotulo-pesquisa" for="busca-pontos">Pesquisar por nome</label>
+    <input id="busca-pontos" class="campo-pesquisa" type="search" placeholder="Digite o nome do ponto" />
     <div id="lista-historico" class="lista-historico"></div>
   </aside>
 
@@ -42,14 +44,14 @@
         <label for="nome">Nome*</label>
         <input type="text" id="nome" required />
 
-        <label for="tipo_material">Tipo de material</label>
-        <input type="text" id="tipo_material" placeholder="ex: plástico, papel, eletrônico" />
+        <label for="tipo_material">Tipo de material*</label>
+        <input type="text" id="tipo_material" placeholder="ex: plástico, papel, eletrônico" required />
 
         <label for="descricao">Descrição</label>
         <textarea id="descricao"></textarea>
 
-        <label for="endereco">Endereço</label>
-        <input type="text" id="endereco" />
+        <label for="endereco">Endereço*</label>
+        <input type="text" id="endereco" required />
 
         <p class="dica">Clique no mapa para definir a localização.</p>
         <p>Latitude: <span id="lat-display">-</span> | Longitude: <span id="lng-display">-</span></p>

@@ -102,6 +102,29 @@ header button {
   font-size: 0.85rem;
 }
 
+.rotulo-pesquisa {
+  display: block;
+  margin-top: 16px;
+  color: #49604c;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.campo-pesquisa {
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px 10px;
+  border: 1px solid #c8d8ca;
+  border-radius: 5px;
+  background: white;
+  color: #263328;
+}
+
+.campo-pesquisa:focus {
+  border-color: #2e7d32;
+  outline: 2px solid rgba(46, 125, 50, 0.16);
+}
+
 .btn-fechar {
   border: 0;
   background: transparent;

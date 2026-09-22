@@ -29,6 +29,7 @@ const btnFecharHistorico = document.getElementById('btn-fechar-historico') as HT
 const painelHistorico = document.getElementById('painel-historico') as HTMLElement;
 const listaHistorico = document.getElementById('lista-historico') as HTMLDivElement;
 const historicoContagem = document.getElementById('historico-contagem') as HTMLParagraphElement;
+const buscaPontos = document.getElementById('busca-pontos') as HTMLInputElement;
 const latDisplay = document.getElementById('lat-display') as HTMLSpanElement;
 const lngDisplay = document.getElementById('lng-display') as HTMLSpanElement;
 
@@ -106,16 +107,22 @@ function adicionarMarcador(ponto: PontoColeta): void {
 }
 
 function renderizarHistorico(): void {
-  const quantidade = pontosCache.length;
-  historicoContagem.textContent = `${quantidade} ${quantidade === 1 ? 'ponto' : 'pontos'}`;
+  const termo = normalizarTexto(buscaPontos.value);
+  const pontosFiltrados = pontosCache.filter((ponto) => normalizarTexto(ponto.nome).includes(termo));
+  const quantidade = pontosFiltrados.length;
+  historicoContagem.textContent = termo
+    ? `${quantidade} de ${pontosCache.length} ${pontosCache.length === 1 ? 'ponto' : 'pontos'}`
+    : `${quantidade} ${quantidade === 1 ? 'ponto' : 'pontos'}`;
 
   if (quantidade === 0) {
-    listaHistorico.innerHTML = '<p class="historico-vazio">Nenhum ponto criado ainda.</p>';
+    listaHistorico.innerHTML = termo
+      ? '<p class="historico-vazio">Nenhum ponto encontrado.</p>'
+      : '<p class="historico-vazio">Nenhum ponto criado ainda.</p>';
     return;
   }
 
   listaHistorico.replaceChildren(
-    ...pontosCache.map((ponto) => {
+    ...pontosFiltrados.map((ponto) => {
       const item = document.createElement('button');
       item.type = 'button';
       item.className = 'item-historico';
@@ -142,6 +149,14 @@ function renderizarHistorico(): void {
       return item;
     })
   );
+}
+
+function normalizarTexto(texto: string): string {
+  return texto
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('pt-BR')
+    .trim();
 }
 
 async function carregarPontosNoMapa(): Promise<void> {
@@ -186,6 +201,7 @@ btnHistorico.addEventListener('click', () => {
 });
 
 btnFecharHistorico.addEventListener('click', fecharHistorico);
+buscaPontos.addEventListener('input', renderizarHistorico);
 
 btnCancelar.addEventListener('click', fecharModal);
 
@@ -240,13 +256,18 @@ form.addEventListener('submit', async (e: SubmitEvent) => {
 
   const id = idInput.value;
   const dados: PontoColetaInput = {
-    nome: nomeInput.value,
-    tipo_material: tipoInput.value,
+    nome: nomeInput.value.trim(),
+    tipo_material: tipoInput.value.trim(),
     descricao: descricaoInput.value,
-    endereco: enderecoInput.value,
+    endereco: enderecoInput.value.trim(),
     latitude: parseFloat(latInput.value),
     longitude: parseFloat(lngInput.value),
   };
+
+  if (!dados.nome || !dados.tipo_material || !dados.endereco) {
+    alert('Preencha o nome, o tipo de material e o endereço.');
+    return;
+  }
 
   if (isNaN(dados.latitude) || isNaN(dados.longitude)) {
     alert('Clique no mapa para definir a localização do ponto de coleta.');

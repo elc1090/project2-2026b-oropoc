@@ -40,8 +40,8 @@ router.post('/', async (req: Request<{}, {}, PontoColetaInput>, res: Response) =
   try {
     const { nome, descricao, tipo_material, latitude, longitude, endereco } = req.body;
 
-    if (!nome || latitude === undefined || longitude === undefined) {
-      return res.status(400).json({ erro: 'Campos obrigatórios: nome, latitude, longitude' });
+    if (!nome?.trim() || !tipo_material?.trim() || !endereco?.trim() || latitude === undefined || longitude === undefined) {
+      return res.status(400).json({ erro: 'Campos obrigatórios: nome, tipo_material, endereco, latitude, longitude' });
     }
 
     const result = await pool.query<PontoColeta>(
@@ -62,6 +62,10 @@ router.put('/:id', async (req: Request<{ id: string }, {}, PontoColetaInput>, re
   try {
     const { id } = req.params;
     const { nome, descricao, tipo_material, latitude, longitude, endereco } = req.body;
+
+    if (!nome?.trim() || !tipo_material?.trim() || !endereco?.trim() || latitude === undefined || longitude === undefined) {
+      return res.status(400).json({ erro: 'Campos obrigatórios: nome, tipo_material, endereco, latitude, longitude' });
+    }
 
     const result = await pool.query<PontoColeta>(
       `UPDATE pontos_coleta
