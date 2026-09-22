@@ -4,8 +4,8 @@
 
 ## Acesso
 
-- frontend:
-- backend:
+- frontend: https://project2-2026b-oropoc-1.onrender.com
+- backend: https://project2-2026b-oropoc.onrender.com
 
 
 ## Desenvolvedor(a)
